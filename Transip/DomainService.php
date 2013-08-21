@@ -37,6 +37,7 @@ class Transip_DomainService
 	public static function _getSoapClient($parameters = array())
 	{
 		$endpoint = Transip_ApiSettings::$endpoint;
+		$proxyEndpoint = Transip_ApiSettings::$proxyEndpoint;
 
 		if(self::$_soapClient === null)
 		{
@@ -70,7 +71,8 @@ class Transip_DomainService
 				'trace'    => false, // can be used for debugging
 			);
 
-			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
+			$wsdlUri  = "{$proxyEndpoint}/wsdl/?service=" . self::SERVICE;
+
 			try
 			{
 				self::$_soapClient = new SoapClient($wsdlUri, $options);
@@ -438,7 +440,8 @@ class Transip_DomainService
 	 */
 	public static function getAllTldInfos()
 	{
-		return self::_getSoapClient(array_merge(array(), array('__method' => 'getAllTldInfos')))->getAllTldInfos();
+		$client = self::_getSoapClient(array_merge(array(), array('__method' => 'getAllTldInfos')));
+		return $client->getAllTldInfos();
 	}
 
 	/**

@@ -36,6 +36,7 @@ class Transip_WebhostingService
 	public static function _getSoapClient($parameters = array())
 	{
 		$endpoint = Transip_ApiSettings::$endpoint;
+		$proxyEndpoint = Transip_ApiSettings::$proxyEndpoint;
 
 		if(self::$_soapClient === null)
 		{
@@ -68,7 +69,7 @@ class Transip_WebhostingService
 				'trace'    => false, // can be used for debugging
 			);
 
-			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
+			$wsdlUri  = "{$proxyEndpoint}/wsdl/?service=" . self::SERVICE;
 			try
 			{
 				self::$_soapClient = new SoapClient($wsdlUri, $options);

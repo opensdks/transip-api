@@ -16,15 +16,22 @@ class Transip_ApiSettings
 	public static $mode = 'readwrite';
 
 	 /**
-	 * TransIP API endpoint to connect to.
-	 *
-	 * e.g.:
-	 *
-	 * 		'api.transip.nl'
-	 * 		'api.transip.be'
-	 * 		'api.transip.eu'
-	 */
+	  * TransIP API endpoint to connect to.
+	  *
+	  * e.g.:
+	  *
+	  * 		'api.transip.nl'
+	  * 		'api.transip.be'
+	  * 		'api.transip.eu'
+	  */
 	public static $endpoint = 'api.transip.nl';
+	
+	/**
+	 * URL to your proxy server
+	 *
+	 * e.g.: 'https://proxy.example.com'
+	 */
+	public static $proxyEndpoint = '';
 
 	/**
 	 * Your login name on the TransIP website.
