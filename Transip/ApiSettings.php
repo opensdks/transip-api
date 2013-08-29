@@ -25,13 +25,6 @@ class Transip_ApiSettings
 	  * 		'api.transip.eu'
 	  */
 	public static $endpoint = 'api.transip.nl';
-	
-	/**
-	 * URL to your proxy server
-	 *
-	 * e.g.: 'https://proxy.example.com'
-	 */
-	public static $proxyEndpoint = '';
 
 	/**
 	 * Your login name on the TransIP website.
@@ -43,4 +36,10 @@ class Transip_ApiSettings
 	 * One of your private keys; these can be requested via your Controlpanel
 	 */
 	public static $privateKey = '';
+	
+	/**
+	 * Option to add aditional options to the SoapClient(http://php.net/manual/en/soapclient.soapclient.php)
+	 */
+	public static $soapOptions = array();
+	
 }
