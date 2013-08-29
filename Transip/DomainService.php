@@ -70,7 +70,7 @@ class Transip_DomainService
 				'trace'    => false, // can be used for debugging
 			);
 			
-			$options = array_merge( $options, Transip_ApiSettings::$soapOptions )
+			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
 			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 
