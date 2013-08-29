@@ -17,3 +17,6 @@ Transip_ApiSettings::$soapOptions = array(
   'proxy_password' => $parsed['pass']
 );
 ```
+
+### Disclaimer
+This repo is based on TransipAPI 4.2 (https://api.transip.nl) and in no way affiliated with or endorsed by TransIP.
