@@ -5,6 +5,9 @@ Added ``` Transip_ApiSettings::$soapOptions``` so you can add extra options to `
 
 I made this adjustment to make it possible to communicate with Transip from Heroku (http://heroku.com). Heroku doesn't have a fixed IP range so it's not possible to add a trusted IP (https://www.transip.nl/cp/mijn-account/#api).
 
+### Installation
+Download the files or add ```"eresults/transip-api": "dev-master"``` to composer.json.
+
 ### Examples
 #### Proximo (https://addons.heroku.com/proximo)
 Add the code below to your bootstrap file and add the IP you get from Proximo to the transip trusted IP list.
