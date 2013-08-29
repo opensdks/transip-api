@@ -61,6 +61,8 @@ class Transip_WebhostingService
 				'MailForward' => 'Transip_MailForward',
 				'SubDomain' => 'Transip_SubDomain',
 			);
+			
+			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
 			$options = array(
 				'classmap' => $classMap,

@@ -56,6 +56,8 @@ class Transip_ColocationService
 				'features' => SOAP_SINGLE_ELEMENT_ARRAYS, // see http://bugs.php.net/bug.php?id=43338
 				'trace'    => false, // can be used for debugging
 			);
+			
+			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
 			$wsdlUri  = "{$proxyEndpoint}/wsdl/?service=" . self::SERVICE;
 			try
