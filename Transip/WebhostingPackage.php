@@ -6,7 +6,7 @@
  * @package Transip
  * @class WebhostingPackage
  * @author TransIP (support@transip.nl)
- * @version 20130704 07:11
+ * @version 20131025 10:01
  */
 class Transip_WebhostingPackage
 {

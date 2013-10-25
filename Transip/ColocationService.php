@@ -9,7 +9,7 @@ require_once('DataCenterVisitor.php');
  * @package Transip
  * @class ColocationService
  * @author TransIP (support@transip.nl)
- * @version 20130704 07:11
+ * @version 20131025 10:01
  */
 class Transip_ColocationService
 {
@@ -30,7 +30,6 @@ class Transip_ColocationService
 	public static function _getSoapClient($parameters = array())
 	{
 		$endpoint = Transip_ApiSettings::$endpoint;
-		$proxyEndpoint = Transip_ApiSettings::$proxyEndpoint;
 
 		if(self::$_soapClient === null)
 		{
@@ -59,7 +58,7 @@ class Transip_ColocationService
 			
 			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
-			$wsdlUri  = "{$proxyEndpoint}/wsdl/?service=" . self::SERVICE;
+			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 			try
 			{
 				self::$_soapClient = new SoapClient($wsdlUri, $options);
@@ -97,13 +96,14 @@ class Transip_ColocationService
 	protected static function _sign($parameters)
 	{
 		// Fixup our private key, copy-pasting the key might lead to whitespace faults
-		if(!preg_match('/-----BEGIN RSA PRIVATE KEY-----(.*)-----END RSA PRIVATE KEY-----/si', Transip_ApiSettings::$privateKey, $matches))
+		if(!preg_match('/-----BEGIN (RSA )?PRIVATE KEY-----(.*)-----END (RSA )?PRIVATE KEY-----/si', Transip_ApiSettings::$privateKey, $matches))
 			die('<p>Could not find your private key, please supply your private key in the ApiSettings file. You can request a new private key in your TransIP Controlpanel.</p>');
 
-		$key = $matches[1];
+		$key = $matches[2];
 		$key = preg_replace('/\s*/s', '', $key);
 		$key = chunk_split($key, 64, "\n");
-		$key = "-----BEGIN RSA PRIVATE KEY-----\n" . $key . "-----END RSA PRIVATE KEY-----";
+
+		$key = "-----BEGIN PRIVATE KEY-----\n" . $key . "-----END PRIVATE KEY-----";
 
 		$digest = self::_sha512Asn1(self::_encodeParameters($parameters));
 		if(!@openssl_private_encrypt($digest, $signature, $key))

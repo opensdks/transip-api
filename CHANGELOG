@@ -1,3 +1,8 @@
+TRANSIP API V4.2.1
+
+NEW
+ - The RSA part of the private key is no longer required for newly generated keys
+
 TRANSIP API V4.1
 
 NEW
