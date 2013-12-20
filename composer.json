@@ -10,5 +10,9 @@
         "classmap": [
             "Transip/"
         ]
-    }
+    },
+	"require": {
+		"niels-janssen/soap-client": "dev-master"
+	}
 }
+
