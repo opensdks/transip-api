@@ -12,7 +12,13 @@
         ]
     },
 	"require": {
-		"niels-janssen/soap-client": "1.0.*"
-	}
+		"niels-janssen/soap-client": "master@dev"
+	},
+	"repositories" : [
+		{
+			"type": "vcs",
+			"url": "git://github.com/martijngastkemper/camcima-soap-client"
+		}
+	]
 }
 
