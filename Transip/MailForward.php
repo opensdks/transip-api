@@ -6,7 +6,7 @@
  * @package Transip
  * @class MailForward
  * @author TransIP (support@transip.nl)
- * @version 20131025 10:01
+ * @version 20140114 01:03
  */
 class Transip_MailForward
 {

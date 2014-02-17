@@ -15,7 +15,7 @@ require_once('SubDomain.php');
  * @package Transip
  * @class WebhostingService
  * @author TransIP (support@transip.nl)
- * @version 20131025 10:01
+ * @version 20140114 01:03
  */
 class Transip_WebhostingService
 {
@@ -23,7 +23,7 @@ class Transip_WebhostingService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'WebhostingService';
 	/** The API version. */
-	const API_VERSION = '4.2';
+	const API_VERSION = '5.0';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 
@@ -60,8 +60,6 @@ class Transip_WebhostingService
 				'MailForward' => 'Transip_MailForward',
 				'SubDomain' => 'Transip_SubDomain',
 			);
-			
-			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
 			$options = array(
 				'classmap' => $classMap,
@@ -69,6 +67,8 @@ class Transip_WebhostingService
 				'features' => SOAP_SINGLE_ELEMENT_ARRAYS, // see http://bugs.php.net/bug.php?id=43338
 				'trace'    => false, // can be used for debugging
 			);
+      
+			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
 			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 			try

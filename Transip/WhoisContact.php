@@ -1,12 +1,12 @@
 <?php
 
 /**
- * 
+ * This class models a WhoisContact
  *
  * @package Transip
  * @class WhoisContact
  * @author TransIP (support@transip.nl)
- * @version 20131025 10:01
+ * @version 20140114 01:03
  */
 class Transip_WhoisContact
 {
