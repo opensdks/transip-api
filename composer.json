@@ -1,18 +1,18 @@
 {
-    "name": "eresults/transip-api",
-    "type": "library",
-    "description": "Transip API client that can work with Heroku",
-    "keywords": ["transip", "api", "heroku"],
-    "require": {
-        "php": ">=5.3"
-    },
-    "autoload": {
-        "classmap": [
-            "Transip/"
-        ]
-    },
+	"name": "eresults/transip-api",
+	"type": "library",
+	"description": "Transip API client that can work with Heroku",
+	"keywords": ["transip", "api", "heroku"],
 	"require": {
-		"camcima/camcima-soap-client": "master@dev"
-  }
+		"php": ">=5.3"
+	},
+	"autoload": {
+		"classmap": [
+			"Transip/"
+		]
+	},
+	"require": {
+		"martijngastkemper/camcima-soap-client": "master@dev"
+	}
 }
 
