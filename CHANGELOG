@@ -1,3 +1,23 @@
+TRANSIP API V5.1
+
+NEW
+ - Added VpsService::getTrafficInformationForVps
+   This method provides more information about your traffic usage
+
+ - Added VpsService::handoverVps
+   With this method you will be able to start the push handover process to another TransIP Account
+
+ - Added VpsService::setCustomerLock
+   Enable or disable the customerlock via the Api
+
+DEPRECATED:
+ - VpsService::getAmountOfTrafficUsed (still works for now)
+
+TRANSIP API V5.0
+
+NEW
+ - Added Support for VPS
+
 TRANSIP API V4.2.1
 
 NEW

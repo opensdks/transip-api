@@ -6,7 +6,6 @@
  * @package Transip
  * @class MailBox
  * @author TransIP (support@transip.nl)
- * @version 20140114 01:03
  */
 class Transip_MailBox
 {

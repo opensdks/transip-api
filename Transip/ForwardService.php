@@ -9,7 +9,6 @@ require_once('Forward.php');
  * @package Transip
  * @class ForwardService
  * @author TransIP (support@transip.nl)
- * @version 20140114 01:03
  */
 class Transip_ForwardService
 {
@@ -17,7 +16,7 @@ class Transip_ForwardService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'ForwardService';
 	/** The API version. */
-	const API_VERSION = '5.0';
+	const API_VERSION = '5.1';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 

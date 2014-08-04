@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This example returns the amount of traffic used for a given VPS in the current contract period
+ * This example will enable and disable the CustomerLock for a Vps
  *
- * @copyright Copyright 2013 TransIP BV
+ * @copyright Copyright 2014 TransIP BV
  * @author TransIP BV <support@transip.nl>
  */
 
@@ -11,10 +11,14 @@
 require_once('Transip/VpsService.php');
 
 try {
-    // Get a the amount of traffic used for the current contract period
-    $amountOfTraffic = Transip_VpsService::getAmountOfTrafficUsed('vps-name');
 
-    print_r($amountOfTraffic);
+    // enable customer lock
+    Transip_VpsService::setCustomerLock('vps-name',true);
+    echo 'vps is customer locked';
+    // disable customer lock
+    Transip_VpsService::setCustomerLock('vps-name',false);
+    echo 'vps is unlocked';
+
 } catch (SoapFault $f) {
     // It is possible that an error occurs when connecting to the TransIP Soap API,
     // those errors will be thrown as a SoapFault exception.

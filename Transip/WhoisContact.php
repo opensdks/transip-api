@@ -6,7 +6,6 @@
  * @package Transip
  * @class WhoisContact
  * @author TransIP (support@transip.nl)
- * @version 20140114 01:03
  */
 class Transip_WhoisContact
 {

@@ -13,7 +13,6 @@ require_once('OperatingSystem.php');
  * @package Transip
  * @class VpsService
  * @author TransIP (support@transip.nl)
- * @version 20140114 01:03
  */
 class Transip_VpsService
 {
@@ -21,7 +20,7 @@ class Transip_VpsService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'VpsService';
 	/** The API version. */
-	const API_VERSION = '5.0';
+	const API_VERSION = '5.1';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 
@@ -392,12 +391,25 @@ class Transip_VpsService
 	 * Get total amount of traffic used this month
 	 *
 	 * @param string $vpsName The name of the VPS
+	 * @deprecated replaced by getTrafficInformationForVps()
 	 * @throws ApiException on error
 	 * @return float $amountOfTraffic Amount of traffic in Bytes
 	 */
 	public static function getAmountOfTrafficUsed($vpsName)
 	{
 		return self::_getSoapClient(array_merge(array($vpsName), array('__method' => 'getAmountOfTrafficUsed')))->getAmountOfTrafficUsed($vpsName);
+	}
+
+	/**
+	 * Get Traffic information by vpsName for this contractPeriod
+	 *
+	 * @param string $vpsName The name of the VPS
+	 * @throws ApiException on error
+	 * @return array 
+	 */
+	public static function getTrafficInformationForVps($vpsName)
+	{
+		return self::_getSoapClient(array_merge(array($vpsName), array('__method' => 'getTrafficInformationForVps')))->getTrafficInformationForVps($vpsName);
 	}
 
 	/**
@@ -566,6 +578,30 @@ class Transip_VpsService
 	public static function updatePtrRecord($ipAddress, $ptrRecord)
 	{
 		return self::_getSoapClient(array_merge(array($ipAddress, $ptrRecord), array('__method' => 'updatePtrRecord')))->updatePtrRecord($ipAddress, $ptrRecord);
+	}
+
+	/**
+	 * Enable or Disable a Customer Lock for a Vps
+	 *
+	 * @param string $vpsName The name of the Vps
+	 * @param boolean $enabled Enable (true) or Disable (false) the lock
+	 * @throws ApiException on error
+	 */
+	public static function setCustomerLock($vpsName, $enabled)
+	{
+		return self::_getSoapClient(array_merge(array($vpsName, $enabled), array('__method' => 'setCustomerLock')))->setCustomerLock($vpsName, $enabled);
+	}
+
+	/**
+	 * Handover a VPS to another TransIP User
+	 *
+	 * @param string $vpsName The name of the Vps
+	 * @param string $targetAccountname the target account name
+	 * @throws ApiException on error
+	 */
+	public static function handoverVps($vpsName, $targetAccountname)
+	{
+		return self::_getSoapClient(array_merge(array($vpsName, $targetAccountname), array('__method' => 'handoverVps')))->handoverVps($vpsName, $targetAccountname);
 	}
 }
 
