@@ -75,10 +75,9 @@ class Transip_DomainService
 			try
 			{
 				self::$_soapClient = new \Camcima\Soap\Client( $wsdlUri, $options );
-				if( $options[ 'proxy_host' ] )
-				{
+				
+				if( isset( $options[ 'proxy_host' ] ) )
 					self::$_soapClient->useProxy( $options['proxy_login'] . ':' . $options['proxy_password'] . '@' . $options['proxy_host'], $options['proxy_port'] );
-				}
 			}
 			catch(SoapFault $sf)
 			{
