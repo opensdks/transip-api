@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This example orders a Vps,
+ * This example will get a list for all available backups for a specific vps
  *
- * @copyright Copyright 2013 TransIP BV
+ * @copyright Copyright 2016 TransIP BV
  * @author TransIP BV <support@transip.nl>
  */
 
@@ -11,13 +11,10 @@
 require_once('Transip/VpsService.php');
 
 try {
-    $productName         = 'vps-bladevps-x1';
-    $addons              = array();
-    $operatingSystemName = 'freebsd-10.2';
-    $hostname            = '';
+    // Get backups
+    $backupList = Transip_VpsService::getVpsBackupsByVps('vps-name');
 
-    Transip_VpsService::orderVps($productName, $addons, $operatingSystemName, $hostname);
-    echo 'Ordered VPS';
+    print_r($backupList);
 } catch (SoapFault $f) {
     // It is possible that an error occurs when connecting to the TransIP Soap API,
     // those errors will be thrown as a SoapFault exception.

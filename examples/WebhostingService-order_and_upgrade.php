@@ -20,14 +20,14 @@ try
 	//
 	// If we want to order an upgrade, we need to get the available upgrade packages and
 	// this call would be:
-	// $packages = WebhostingService::getAvailableUpgrades('transip.nl');
-	$packages = WebhostingService::getAvailablePackages();
+	// $packages = Transip_WebhostingService::getAvailableUpgrades('transip.nl');
+	$packages = Transip_WebhostingService::getAvailablePackages();
 
 	// Now order the first available package
 	//
 	// If we want to upgrade this call would be
-	// WebhostingService::upgrade('transip.nl', $packages[0]);
-	WebhostingService::order('example.com', $packages[0]);
+	// Transip_WebhostingService::upgrade('transip.nl', $packages[0]);
+	Transip_WebhostingService::order('example.com', $packages[0]);
 }
 catch(SoapFault $f)
 {

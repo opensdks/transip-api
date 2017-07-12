@@ -24,8 +24,8 @@ try {
      */
 
     $trafficInformation = Transip_VpsService::getTrafficInformationForVps('vps-name');
-
     print_r($trafficInformation);
+
 } catch (SoapFault $f) {
     // It is possible that an error occurs when connecting to the TransIP Soap API,
     // those errors will be thrown as a SoapFault exception.

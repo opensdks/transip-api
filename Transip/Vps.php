@@ -66,6 +66,13 @@ class Transip_Vps
 	public $ipAddress = '';
 
 	/**
+	 * The Vps MacAddress
+	 *
+	 * @var string
+	 */
+	public $macAddress = '';
+
+	/**
 	 * The Vps VNC hostname
 	 *
 	 * @var string
@@ -89,7 +96,7 @@ class Transip_Vps
 	/**
 	 * If the vps is blocked
 	 *
-	 * @var string
+	 * @var boolean
 	 */
 	public $isBlocked = false;
 

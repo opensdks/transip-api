@@ -5,6 +5,7 @@ require_once('Product.php');
 require_once('PrivateNetwork.php');
 require_once('Vps.php');
 require_once('Snapshot.php');
+require_once('VpsBackup.php');
 require_once('OperatingSystem.php');
 
 /**
@@ -20,7 +21,7 @@ class Transip_VpsService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'VpsService';
 	/** The API version. */
-	const API_VERSION = '5.1';
+	const API_VERSION = '5.4';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 
@@ -53,6 +54,7 @@ class Transip_VpsService
 				'PrivateNetwork' => 'Transip_PrivateNetwork',
 				'Vps' => 'Transip_Vps',
 				'Snapshot' => 'Transip_Snapshot',
+				'VpsBackup' => 'Transip_VpsBackup',
 				'OperatingSystem' => 'Transip_OperatingSystem',
 			);
 
@@ -253,7 +255,7 @@ class Transip_VpsService
 	 * Get cancellable addons for specific Vps
 	 *
 	 * @param string $vpsName The name of the Vps
-	 * @return Transip_Product[] List of available Vps Products
+	 * @return Transip_Product[] List of cancellable addons for this Vps
 	 */
 	public static function getCancellableAddonsForVps($vpsName)
 	{
@@ -272,6 +274,17 @@ class Transip_VpsService
 	public static function orderVps($productName, $addons, $operatingSystemName, $hostname)
 	{
 		return self::_getSoapClient(array_merge(array($productName, $addons, $operatingSystemName, $hostname), array('__method' => 'orderVps')))->orderVps($productName, $addons, $operatingSystemName, $hostname);
+	}
+
+	/**
+	 * Clone a VPS
+	 *
+	 * @param string $vpsName The vps name
+	 * @throws ApiException
+	 */
+	public static function cloneVps($vpsName)
+	{
+		return self::_getSoapClient(array_merge(array($vpsName), array('__method' => 'cloneVps')))->cloneVps($vpsName);
 	}
 
 	/**
@@ -388,24 +401,11 @@ class Transip_VpsService
 	}
 
 	/**
-	 * Get total amount of traffic used this month
-	 *
-	 * @param string $vpsName The name of the VPS
-	 * @deprecated replaced by getTrafficInformationForVps()
-	 * @throws ApiException on error
-	 * @return float $amountOfTraffic Amount of traffic in Bytes
-	 */
-	public static function getAmountOfTrafficUsed($vpsName)
-	{
-		return self::_getSoapClient(array_merge(array($vpsName), array('__method' => 'getAmountOfTrafficUsed')))->getAmountOfTrafficUsed($vpsName);
-	}
-
-	/**
 	 * Get Traffic information by vpsName for this contractPeriod
 	 *
 	 * @param string $vpsName The name of the VPS
 	 * @throws ApiException on error
-	 * @return array 
+	 * @return array The traffic information for this VPS
 	 */
 	public static function getTrafficInformationForVps($vpsName)
 	{
@@ -470,6 +470,19 @@ class Transip_VpsService
 	}
 
 	/**
+	 * Revert a snapshot to another VPS
+	 *
+	 * @param string $sourceVpsName The name of the VPS where the snapshot is made
+	 * @param string $snapshotName The snapshot name
+	 * @param string $destinationVpsName The name of the VPS where the snapshot should be reverted to
+	 * @throws ApiException on error
+	 */
+	public static function revertSnapshotToOtherVps($sourceVpsName, $snapshotName, $destinationVpsName)
+	{
+		return self::_getSoapClient(array_merge(array($sourceVpsName, $snapshotName, $destinationVpsName), array('__method' => 'revertSnapshotToOtherVps')))->revertSnapshotToOtherVps($sourceVpsName, $snapshotName, $destinationVpsName);
+	}
+
+	/**
 	 * Remove a snapshot
 	 *
 	 * @param string $vpsName The vps name
@@ -479,6 +492,18 @@ class Transip_VpsService
 	public static function removeSnapshot($vpsName, $snapshotName)
 	{
 		return self::_getSoapClient(array_merge(array($vpsName, $snapshotName), array('__method' => 'removeSnapshot')))->removeSnapshot($vpsName, $snapshotName);
+	}
+
+	/**
+	 * Revert a vps backup
+	 *
+	 * @param string $vpsName The vps name
+	 * @param int $vpsBackupId The backup id
+	 * @throws ApiException on error
+	 */
+	public static function revertVpsBackup($vpsName, $vpsBackupId)
+	{
+		return self::_getSoapClient(array_merge(array($vpsName, $vpsBackupId), array('__method' => 'revertVpsBackup')))->revertVpsBackup($vpsName, $vpsBackupId);
 	}
 
 	/**
@@ -514,6 +539,17 @@ class Transip_VpsService
 	}
 
 	/**
+	 * Get all VpsBackups for a vps
+	 *
+	 * @param string $vpsName The name of the VPS
+	 * @return Transip_VpsBackup[] $vpsBackupArray Array of snapshot objects
+	 */
+	public static function getVpsBackupsByVps($vpsName)
+	{
+		return self::_getSoapClient(array_merge(array($vpsName), array('__method' => 'getVpsBackupsByVps')))->getVpsBackupsByVps($vpsName);
+	}
+
+	/**
 	 * Get all operating systems
 	 *
 	 * @return Transip_OperatingSystem[] Array of OperatingSystem objects
@@ -533,6 +569,19 @@ class Transip_VpsService
 	public static function installOperatingSystem($vpsName, $operatingSystemName, $hostname)
 	{
 		return self::_getSoapClient(array_merge(array($vpsName, $operatingSystemName, $hostname), array('__method' => 'installOperatingSystem')))->installOperatingSystem($vpsName, $operatingSystemName, $hostname);
+	}
+
+	/**
+	 * Install an operating system on a vps with a unattended installfile
+	 *
+	 * @param string $vpsName The name of the VPS
+	 * @param string $operatingSystemName The name of the operating to install
+	 * @param string $base64InstallText base64_encoded preseed/kickstart text
+	 * @throws ApiException
+	 */
+	public static function installOperatingSystemUnattended($vpsName, $operatingSystemName, $base64InstallText)
+	{
+		return self::_getSoapClient(array_merge(array($vpsName, $operatingSystemName, $base64InstallText), array('__method' => 'installOperatingSystemUnattended')))->installOperatingSystemUnattended($vpsName, $operatingSystemName, $base64InstallText);
 	}
 
 	/**

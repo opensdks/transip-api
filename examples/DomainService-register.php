@@ -14,7 +14,7 @@ try
 	Transip_DomainService::register($domain);
 	echo 'The domain ' . $domain->name . ' has been requested.';
 }
-catch(SoapFault $f)
+catch(SoapFault $e)
 {
 	// It is possible that an error occurs when connecting to the TransIP Soap API,
 	// those errors will be thrown as a SoapFault exception.

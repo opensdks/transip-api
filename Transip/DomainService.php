@@ -23,7 +23,7 @@ class Transip_DomainService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'DomainService';
 	/** The API version. */
-	const API_VERSION = '5.1';
+	const API_VERSION = '5.4';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 
@@ -409,9 +409,7 @@ class Transip_DomainService
 
 	/**
 	 * Starts an owner change of a Domain, brings additional costs with the following TLDs:
-	 * .nl
 	 * .be
-	 * .eu
 	 *
 	 * @param string $domainName the domainName to change the owner for
 	 * @param Transip_WhoisContact $registrantWhoisContact the new contact data for this

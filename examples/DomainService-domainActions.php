@@ -54,7 +54,7 @@ try
 
 		// If you want to cancel the action use
 		// Beware, all changes will be rollbacked.
-		// TransIP_DomainService::cancelDomainAction($domain)
+		// Transip_DomainService::cancelDomainAction($domain)
 	}
 
 	echo $result;

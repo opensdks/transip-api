@@ -12,7 +12,7 @@
 require_once('Transip/VpsService.php');
 
 try {
-    //
+    // hostname is only used when installing a "preinstalled image" like plesk, directadmin or cpanel
     Transip_VpsService::installOperatingSystem('vps-name','operating-system-name','hostname');
     echo 'Operating system install in progress';
 } catch (SoapFault $f) {

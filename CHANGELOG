@@ -1,3 +1,28 @@
+TRANSIP API V5.4
+
+NEW
+ - Added HaipService
+   With which you can list your Haips and change the coupled Vps to your Haip
+
+TRANSIP API V5.3
+
+NEW
+ - Added VpsService::installOperatingSystemUnattended
+   Start a installation with a custom preseed/kickstart provided via the api (base64_encoded)
+
+TRANSIP API V5.2
+
+NEW
+ - Added VpsService::cloneVps
+   The ability to clone a VPS to a new VPS
+
+ - Added VpsService::revertSnapshotToOtherVps
+   Revert a snapshot from any vps to any vps
+
+ - Added VpsService::revertVpsBackup
+   Revert a automated VPS backup
+
+
 TRANSIP API V5.1
 
 NEW
@@ -13,15 +38,18 @@ NEW
 DEPRECATED:
  - VpsService::getAmountOfTrafficUsed (still works for now)
 
+
 TRANSIP API V5.0
 
 NEW
  - Added Support for VPS
 
+
 TRANSIP API V4.2.1
 
 NEW
  - The RSA part of the private key is no longer required for newly generated keys
+
 
 TRANSIP API V4.1
 

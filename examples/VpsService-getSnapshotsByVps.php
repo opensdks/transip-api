@@ -12,7 +12,7 @@ require_once('Transip/VpsService.php');
 
 try {
     // Get a list of all snapshots for a vps
-    $snapshotList = Transip_VpsService::getSnapshotsByVps('vpsName');
+    $snapshotList = Transip_VpsService::getSnapshotsByVps('vps-name');
 
     print_r($snapshotList);
 } catch (SoapFault $f) {

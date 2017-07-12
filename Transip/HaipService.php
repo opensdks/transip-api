@@ -1,20 +1,20 @@
 <?php
 
 require_once('ApiSettings.php');
-require_once('Forward.php');
+require_once('Haip.php');
 
 /**
- * This is the API endpoint for the ForwardService
+ * This is the API endpoint for the HaipService
  *
  * @package Transip
- * @class ForwardService
+ * @class HaipService
  * @author TransIP (support@transip.nl)
  */
-class Transip_ForwardService
+class Transip_HaipService
 {
 	// These fields are SOAP related
 	/** The SOAP service that corresponds with this class. */
-	const SERVICE = 'ForwardService';
+	const SERVICE = 'HaipService';
 	/** The API version. */
 	const API_VERSION = '5.4';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
@@ -45,7 +45,7 @@ class Transip_ForwardService
 			if(!empty($errors)) die('<p>' . implode("</p>\n<p>", $errors) . '</p>');
 
 			$classMap = array(
-				'Forward' => 'Transip_Forward',
+				'Haip' => 'Transip_Haip',
 			);
 
 			$options = array(
@@ -54,17 +54,11 @@ class Transip_ForwardService
 				'features' => SOAP_SINGLE_ELEMENT_ARRAYS, // see http://bugs.php.net/bug.php?id=43338
 				'trace'    => false, // can be used for debugging
 			);
-			
-			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
 			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 			try
 			{
-				self::$_soapClient = new \Camcima\Soap\Client( $wsdlUri, $options );
-				if( $options[ 'proxy_host' ] )
-				{
-					self::$_soapClient->useProxy( $options['proxy_login'] . ':' . $options['proxy_password'] . '@' . $options['proxy_host'], $options['proxy_port'] );
-				}
+				self::$_soapClient = new SoapClient($wsdlUri, $options);
 			}
 			catch(SoapFault $sf)
 			{
@@ -185,59 +179,36 @@ class Transip_ForwardService
 		return str_replace('%7E', '~', $string);
 	}
 
-	const CANCELLATIONTIME_END = 'end';
-	const CANCELLATIONTIME_IMMEDIATELY = 'immediately';
-
 	/**
-	 * Gets a list of all domains which have the Forward option enabled.
+	 * Get a HA-IP by name
 	 *
-	 * @return string[] A list of all forwards enabled domains for the user
+	 * @param string $haipName The HA-IP name
+	 * @return Transip_Haip The vps objects
 	 */
-	public static function getForwardDomainNames()
+	public static function getHaip($haipName)
 	{
-		return self::_getSoapClient(array_merge(array(), array('__method' => 'getForwardDomainNames')))->getForwardDomainNames();
+		return self::_getSoapClient(array_merge(array($haipName), array('__method' => 'getHaip')))->getHaip($haipName);
 	}
 
 	/**
-	 * Gets information about a forwarded domain
+	 * Get all HA-IPs
 	 *
-	 * @param string $forwardDomainName The domain to get the info for
-	 * @return Transip_Forward Forward object with all info if found, an exception otherwise
+	 * @return Transip_Haip[] Array of HA-IP objects
 	 */
-	public static function getInfo($forwardDomainName)
+	public static function getHaips()
 	{
-		return self::_getSoapClient(array_merge(array($forwardDomainName), array('__method' => 'getInfo')))->getInfo($forwardDomainName);
+		return self::_getSoapClient(array_merge(array(), array('__method' => 'getHaips')))->getHaips();
 	}
 
 	/**
-	 * Order webhosting for a domain name
+	 * Changes the VPS connected to the HA-IP.
 	 *
-	 * @param Transip_Forward $forward info about the forward to order. Mandatory fields are $domainName. Other fields are optional.
+	 * @param string $haipName The HA-IP name
+	 * @param string $vpsName The Vps name
 	 */
-	public static function order($forward)
+	public static function changeHaipVps($haipName, $vpsName)
 	{
-		return self::_getSoapClient(array_merge(array($forward), array('__method' => 'order')))->order($forward);
-	}
-
-	/**
-	 * Cancel webhosting for a domain
-	 *
-	 * @param string $forwardDomainName The domain name of the forward to cancel the forwarding service for
-	 * @param string $endTime the time to cancel the domain (ForwardService::CANCELLATIONTIME_END (end of contract) or ForwardService::CANCELLATIONTIME_IMMEDIATELY (as soon as possible))
-	 */
-	public static function cancel($forwardDomainName, $endTime)
-	{
-		return self::_getSoapClient(array_merge(array($forwardDomainName, $endTime), array('__method' => 'cancel')))->cancel($forwardDomainName, $endTime);
-	}
-
-	/**
-	 * Modify the options of a Forward. All fields set in the Forward object will be changed.
-	 *
-	 * @param Transip_Forward $forward The forward to modify
-	 */
-	public static function modify($forward)
-	{
-		return self::_getSoapClient(array_merge(array($forward), array('__method' => 'modify')))->modify($forward);
+		return self::_getSoapClient(array_merge(array($haipName, $vpsName), array('__method' => 'changeHaipVps')))->changeHaipVps($haipName, $vpsName);
 	}
 }
 
