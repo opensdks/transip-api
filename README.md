@@ -22,4 +22,4 @@ Transip_ApiSettings::$soapOptions = array(
 ```
 
 ### Disclaimer
-This repo is based on TransipAPI 4.2 (https://api.transip.nl) and in no way affiliated with or endorsed by TransIP.
+This repo is based on TransipAPI 5.4 (https://www.transip.nl/transip/api/) and in no way affiliated with or endorsed by TransIP.
