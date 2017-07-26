@@ -1,8 +1,9 @@
 {
 	"name": "eresults/transip-api",
 	"type": "library",
-	"description": "Transip API client that can work with Heroku",
+	"description": "Unofficial Transip API client available via Composer",
 	"keywords": ["transip", "api", "heroku"],
+	"version": "5.4",
 	"require": {
 		"php": ">=5.3"
 	},
@@ -10,9 +11,6 @@
 		"classmap": [
 			"Transip/"
 		]
-	},
-	"require": {
-		"martijngastkemper/camcima-soap-client": "master@dev"
 	}
 }
 
