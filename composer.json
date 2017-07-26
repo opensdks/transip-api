@@ -3,7 +3,7 @@
 	"type": "library",
 	"description": "Unofficial Transip API client available via Composer",
 	"keywords": ["transip", "api", "heroku"],
-	"version": "5.4.1",
+	"version": "5.4.2",
 	"require": {
 		"php": ">=5.3"
 	},
