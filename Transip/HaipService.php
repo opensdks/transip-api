@@ -55,10 +55,18 @@ class Transip_HaipService
 				'trace'    => false, // can be used for debugging
 			);
 
+            $options = array_merge( $options, Transip_ApiSettings::$soapOptions );
+
 			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 			try
 			{
-				self::$_soapClient = new SoapClient($wsdlUri, $options);
+				self::$_soapClient = new \Camcima\Soap\Client($wsdlUri, $options);
+
+                self::$_soapClient = new \Camcima\Soap\Client( $wsdlUri, $options );
+                if( $options[ 'proxy_host' ] )
+                {
+                    self::$_soapClient->useProxy( $options['proxy_login'] . ':' . $options['proxy_password'] . '@' . $options['proxy_host'], $options['proxy_port'] );
+                }
 			}
 			catch(SoapFault $sf)
 			{
