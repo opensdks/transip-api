@@ -23,7 +23,7 @@ class Transip_DomainService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'DomainService';
 	/** The API version. */
-	const API_VERSION = '5.4';
+	const API_VERSION = '5.13';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 
@@ -68,16 +68,11 @@ class Transip_DomainService
 				'features' => SOAP_SINGLE_ELEMENT_ARRAYS, // see http://bugs.php.net/bug.php?id=43338
 				'trace'    => false, // can be used for debugging
 			);
-			
-			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
 			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 			try
 			{
-				self::$_soapClient = new \Camcima\Soap\Client( $wsdlUri, $options );
-				
-				if( isset( $options[ 'proxy_host' ] ) )
-					self::$_soapClient->useProxy( $options['proxy_login'] . ':' . $options['proxy_password'] . '@' . $options['proxy_host'], $options['proxy_port'] );
+				self::$_soapClient = new SoapClient($wsdlUri, $options);
 			}
 			catch(SoapFault $sf)
 			{
@@ -194,6 +189,7 @@ class Transip_DomainService
 	 */
 	protected static function _urlencode($string)
 	{
+		$string = trim($string);
 		$string = rawurlencode($string);
 		return str_replace('%7E', '~', $string);
 	}
@@ -208,11 +204,12 @@ class Transip_DomainService
 	const ACTION_REGISTER = 'register';
 	const ACTION_TRANSFER = 'transfer';
 	const ACTION_INTERNALPULL = 'internalpull';
+	const TRACK_ENDPOINT_NAME = 'Domain';
 
 	/**
 	 * Checks the availability of multiple domains.
 	 *
-	 * @param string[] $domainNames The domain names to check for availability. A maximum of 20 domainNames at once
+	 * @param string[] $domainNames The domain names to check for availability.<br /><br />- A maximum of 20 domainNames at once can be checked.<br />- domainNames must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @example examples/DomainService-batchCheckAvailability.php
 	 * @throws ApiException
 	 * @return Transip_DomainCheckResult[] A list of DomainCheckResult objects, holding the domainName and the status per result.
@@ -225,8 +222,8 @@ class Transip_DomainService
 	/**
 	 * Checks the availability of a domain.
 	 *
-	 * @param string $domainName The domain name to check for availability.
-	 * @return string the availability status of the domain name:
+	 * @param string $domainName The domain name to check for availability.<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
+	 * @return string the availability status of the domain name:<br /><br />- free                the domain is free for registration<br />- notfree            the domain is not free for new registration, but can possibly be transferred<br />- inyouraccount        the domain is already in your account<br />- unavailable        the domain is not available for registration
 	 * @example examples/DomainService-checkAvailability.php
 	 */
 	public static function checkAvailability($domainName)
@@ -237,8 +234,9 @@ class Transip_DomainService
 	/**
 	 * Gets the whois of a domain name
 	 *
-	 * @param string $domainName the domain name to get the whois for
+	 * @param string $domainName the domain name to get the whois for<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @return string the whois data for the domain
+	 * @throws ApiException
 	 * @example examples/DomainService-getWhois.php
 	 */
 	public static function getWhois($domainName)
@@ -260,7 +258,7 @@ class Transip_DomainService
 	/**
 	 * Get information about a domainName.
 	 *
-	 * @param string $domainName The domainName to get the information for.
+	 * @param string $domainName The domainName to get the information for.<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @example examples/DomainService-DomainService-getInfo.php
 	 * @throws ApiException  If the Domain could not be found.
 	 * @return Transip_Domain A Domain object holding the data for the requested domainName.
@@ -273,7 +271,7 @@ class Transip_DomainService
 	/**
 	 * Get information about a list of Domain names.
 	 *
-	 * @param string[] $domainNames A list of Domain names you want information for.
+	 * @param string[] $domainNames A list of Domain names you want information for.<br /><br />- domainNames must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @throws Exception     If something else went wrong.
 	 * @return Transip_Domain[] Domain objects.
 	 */
@@ -285,7 +283,7 @@ class Transip_DomainService
 	/**
 	 * Gets the Auth code for a domainName
 	 *
-	 * @param string $domainName the domainName to get the authcode for
+	 * @param string $domainName the domainName to get the authcode for<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @deprecated
 	 * @return string the authentication code for a domain name
 	 * @example examples/DomainService-DomainService-getAuthCode.php
@@ -298,7 +296,7 @@ class Transip_DomainService
 	/**
 	 * Gets the lock status for a domainName
 	 *
-	 * @param string $domainName the domainName to get the lock status for
+	 * @param string $domainName the domainName to get the lock status for<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @return boolean true iff the domain is locked at the registry
 	 * @deprecated use getInfo()
 	 */
@@ -313,6 +311,7 @@ class Transip_DomainService
 	 * @param Transip_Domain $domain The Domain object holding information about the domain that needs to be registered.
 	 * @requires readwrite mode
 	 * @example examples/DomainService-DomainService-register-whois.php
+	 * @return string proposition number
 	 * @throws ApiException
 	 */
 	public static function register($domain)
@@ -324,7 +323,7 @@ class Transip_DomainService
 	 * Cancels a domain name, will automatically create and sign a cancellation document
 	 * Please note that domains with webhosting cannot be cancelled through the API
 	 *
-	 * @param string $domainName The domainname that needs to be cancelled.
+	 * @param string $domainName The domainname that needs to be cancelled.<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @param string $endTime The time to cancel the domain (DomainService::CANCELLATIONTIME_END (end of contract)
 	 * @requires readwrite mode
 	 * @example examples/DomainService-DomainService-cancel.php
@@ -340,6 +339,7 @@ class Transip_DomainService
 	 *
 	 * @param Transip_Domain $domain the Domain object holding information about the domain that needs to be transfered
 	 * @param string $authCode the authorization code for domains needing this for transfers (e.g. .com or .org transfers). Leave empty when n/a.
+	 * @return string proposition number
 	 * @requires readwrite mode
 	 * @example examples/DomainService-DomainService-transfer.php
 	 */
@@ -353,6 +353,7 @@ class Transip_DomainService
 	 *
 	 * @param Transip_Domain $domain the Domain object holding information about the domain that needs to be transfered
 	 * @param string $authCode the authorization code for domains needing this for transfers (e.g. .com or .org transfers). Leave empty when n/a.
+	 * @return string proposition number
 	 * @requires readwrite mode
 	 * @example examples/DomainService-DomainService-transfer.php
 	 */
@@ -364,7 +365,7 @@ class Transip_DomainService
 	/**
 	 * Starts a nameserver change for this domain, will replace all existing nameservers with the new nameservers
 	 *
-	 * @param string $domainName the domainName to change the nameservers for
+	 * @param string $domainName the domainName to change the nameservers for <br /><br /> domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @param Transip_Nameserver[] $nameservers the list of new nameservers for this domain
 	 * @example examples/DomainService-DomainService-setNameservers.php
 	 */
@@ -376,7 +377,7 @@ class Transip_DomainService
 	/**
 	 * Lock this domain in real time
 	 *
-	 * @param string $domainName the domainName to set the lock for
+	 * @param string $domainName the domainName to set the lock for<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @example examples/DomainService-DomainService-setLock.php
 	 */
 	public static function setLock($domainName)
@@ -387,7 +388,7 @@ class Transip_DomainService
 	/**
 	 * unlocks this domain in real time
 	 *
-	 * @param string $domainName the domainName to unlock
+	 * @param string $domainName the domainName to unlock<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @example examples/DomainService-DomainService-setLock.php
 	 */
 	public static function unsetLock($domainName)
@@ -398,9 +399,9 @@ class Transip_DomainService
 	/**
 	 * Sets the DnEntries for this Domain, will replace all existing dns entries with the new entries
 	 *
-	 * @param string $domainName the domainName to change the dns entries for
+	 * @param string $domainName the domainName to change the dns entries for<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @param Transip_DnsEntry[] $dnsEntries the list of new DnsEntries for this domain
-	 * @example examples/DomainService-DomainService-setDnsEntries.php
+	 * @deprecated Use DnsService.setDnsEntries instead.
 	 */
 	public static function setDnsEntries($domainName, $dnsEntries)
 	{
@@ -411,7 +412,7 @@ class Transip_DomainService
 	 * Starts an owner change of a Domain, brings additional costs with the following TLDs:
 	 * .be
 	 *
-	 * @param string $domainName the domainName to change the owner for
+	 * @param string $domainName the domainName to change the owner for<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @param Transip_WhoisContact $registrantWhoisContact the new contact data for this
 	 * @example examples/DomainService-DomainService-setOwner.php
 	 * @throws ApiException
@@ -424,8 +425,9 @@ class Transip_DomainService
 	/**
 	 * Starts a contact change of a domain, this will replace all existing contacts
 	 *
-	 * @param string $domainName the domainName to change the contacts for
+	 * @param string $domainName the domainName to change the contacts for<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @param Transip_WhoisContact[] $contacts the list of new contacts for this domain
+	 * @throws ApiException
 	 * @example examples/DomainService-DomainService-setContacts.php
 	 */
 	public static function setContacts($domainName, $contacts)
@@ -447,7 +449,7 @@ class Transip_DomainService
 	/**
 	 * Get info about a specific TLD
 	 *
-	 * @param string $tldName The tld to get information about.
+	 * @param string $tldName The tld to get information about.<br /><br />- tldName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 * @example examples/DomainService-DomainService-getAllTldInfos.php
 	 * @throws ApiException  If the TLD could not be found.
 	 * @return Transip_Tld Tld object with info about this Tld
@@ -460,8 +462,8 @@ class Transip_DomainService
 	/**
 	 * Gets info about the action this domain is currently running
 	 *
-	 * @param string $domainName Name of the domain
-	 * @return Transip_DomainAction if this domain is currently running an action, a corresponding DomainAction with info about the action will be returned.
+	 * @param string $domainName Name of the domain<br /><br />- domainName must meet the requirements specified in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>.
+	 * @return Transip_DomainAction if this domain is currently running an action, a corresponding DomainAction with info about the action will be returned. If there is no action running, null will be returned.
 	 * @example examples/DomainService-DomainService-domainActions.php
 	 */
 	public static function getCurrentDomainAction($domainName)
@@ -506,6 +508,20 @@ class Transip_DomainService
 	public static function cancelDomainAction($domain)
 	{
 		return self::_getSoapClient(array_merge(array($domain), array('__method' => 'cancelDomainAction')))->cancelDomainAction($domain);
+	}
+
+	/**
+	 * Request the authcode at the registry
+	 * 
+	 * This function will request the authcode for domains at DNS.be and EURid from the registry
+	 *
+	 * @param string $domainName the domainNAme to request the autocode for<br /><br />- domainName must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
+	 * @return string|null the authentication code for the domain name (or null)
+	 * @throws ApiException
+	 */
+	public static function requestAuthCode($domainName)
+	{
+		return self::_getSoapClient(array_merge(array($domainName), array('__method' => 'requestAuthCode')))->requestAuthCode($domainName);
 	}
 }
 

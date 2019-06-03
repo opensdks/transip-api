@@ -29,11 +29,11 @@ class Transip_MailForward
 	 * @param string $name Name of the MailForward
 	 * @param string $targetAddress Where to forward to
 	 */
-	public function __construct($name, $targetAddress)
-	{
-		$this->name = $name;
-		$this->targetAddress = $targetAddress;
-	}
+    public function __construct($name, $targetAddress)
+    {
+        $this->name = $name;
+        $this->targetAddress = $targetAddress;
+    }
 }
 
 ?>

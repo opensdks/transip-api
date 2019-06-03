@@ -48,8 +48,8 @@ class Transip_DnsEntry
 
 	/**
 	 * Constructs a new DnsEntry of the form
-	 * www	IN	86400	A		127.0.0.1
-	 * mail IN	86400	CNAME	@
+	 * www    IN    86400    A        127.0.0.1
+	 * mail IN    86400    CNAME    @
 	 * 
 	 * Note that the IN class is always mandatory for this Entry and this is implied.
 	 *
@@ -58,13 +58,13 @@ class Transip_DnsEntry
 	 * @param string $type the type of this entry, one of the TYPE_ constants in this class
 	 * @param string $content content of of the dns entry, for example '10 mail', '127.0.0.1' or 'www'
 	 */
-	public function __construct($name, $expire, $type, $content)
-	{
-		$this->name		= $name;
-		$this->expire	= $expire;
-		$this->type		= $type;
-		$this->content	= $content;
-	}
+    public function __construct($name, $expire, $type, $content)
+    {
+        $this->name = $name;
+        $this->expire = $expire;
+        $this->type = $type;
+        $this->content = $content;
+    }
 }
 
 ?>

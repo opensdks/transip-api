@@ -21,7 +21,7 @@ class Transip_DomainCheckResult
 	const ACTION_INTERNALPUSH = 'internalpush';
 
 	/**
-	 * The name of the Domain for which we have a status in this object
+	 * The name of the Domain for which we have a status in this object. This needs to meet the requirements specified in <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 *
 	 * @var string;
 	 */

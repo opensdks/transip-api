@@ -38,12 +38,12 @@ class Transip_Db
 	 * @param string $password Database password
 	 * @param string $maxDiskUsage maximum size of Database
 	 */
-	public function __construct($name, $username = '', $maxDiskUsage = 100)
-	{
-		$this->name = $name;
-		$this->username = $username;
-		$this->maxDiskUsage = $maxDiskUsage;
-	}
+    public function __construct($name, $username = '', $maxDiskUsage = 100)
+    {
+        $this->name = $name;
+        $this->username = $username;
+        $this->maxDiskUsage = $maxDiskUsage;
+    }
 }
 
 ?>

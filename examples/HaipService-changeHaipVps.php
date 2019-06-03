@@ -12,7 +12,7 @@ require_once('Transip/HaipService.php');
 
 try {
     // Change the attached Vps of the HA-IP
-    Transip_HaipService::changeHaipVps('haipName', 'targetVpsName');
+    Transip_HaipService::changeHaipVps('example-haip', 'example-vps');
 } catch (SoapFault $f) {
     // It is possible that an error occurs when connecting to the TransIP Soap API,
     // those errors will be thrown as a SoapFault exception.

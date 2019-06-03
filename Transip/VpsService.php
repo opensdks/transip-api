@@ -7,6 +7,7 @@ require_once('Vps.php');
 require_once('Snapshot.php');
 require_once('VpsBackup.php');
 require_once('OperatingSystem.php');
+require_once('AvailabilityZone.php');
 
 /**
  * This is the API endpoint for the VpsService
@@ -21,7 +22,7 @@ class Transip_VpsService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'VpsService';
 	/** The API version. */
-	const API_VERSION = '5.4';
+	const API_VERSION = '5.13';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 
@@ -56,6 +57,7 @@ class Transip_VpsService
 				'Snapshot' => 'Transip_Snapshot',
 				'VpsBackup' => 'Transip_VpsBackup',
 				'OperatingSystem' => 'Transip_OperatingSystem',
+				'AvailabilityZone' => 'Transip_AvailabilityZone',
 			);
 
 			$options = array(
@@ -64,17 +66,11 @@ class Transip_VpsService
 				'features' => SOAP_SINGLE_ELEMENT_ARRAYS, // see http://bugs.php.net/bug.php?id=43338
 				'trace'    => false, // can be used for debugging
 			);
-      
-			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
 			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 			try
 			{
-				self::$_soapClient = new \Camcima\Soap\Client( $wsdlUri, $options );
-				if( $options[ 'proxy_host' ] )
-				{
-					self::$_soapClient->useProxy( $options['proxy_login'] . ':' . $options['proxy_password'] . '@' . $options['proxy_host'], $options['proxy_port'] );
-				}
+				self::$_soapClient = new SoapClient($wsdlUri, $options);
 			}
 			catch(SoapFault $sf)
 			{
@@ -191,12 +187,14 @@ class Transip_VpsService
 	 */
 	protected static function _urlencode($string)
 	{
+		$string = trim($string);
 		$string = rawurlencode($string);
 		return str_replace('%7E', '~', $string);
 	}
 
 	const CANCELLATIONTIME_END = 'end';
 	const CANCELLATIONTIME_IMMEDIATELY = 'immediately';
+	const TRACK_ENDPOINT_NAME = 'VPS';
 
 	/**
 	 * Get available VPS products
@@ -269,7 +267,7 @@ class Transip_VpsService
 	 * @param string[] $addons array with additional addons
 	 * @param string $operatingSystemName The name of the operatingSystem to install
 	 * @param string $hostname The name for the host
-	 * @throws ApiException on error
+	 * @throws Exception
 	 */
 	public static function orderVps($productName, $addons, $operatingSystemName, $hostname)
 	{
@@ -277,14 +275,41 @@ class Transip_VpsService
 	}
 
 	/**
+	 * Order a VPS with optional Addons
+	 *
+	 * @param string $productName Name of the product
+	 * @param string[] $addons array with additional addons
+	 * @param string $operatingSystemName The name of the operatingSystem to install
+	 * @param string $hostname The name for the host
+	 * @param string $availabilityZone The availability zone the vps should be created in
+	 * @throws Exception
+	 */
+	public static function orderVpsInAvailabilityZone($productName, $addons, $operatingSystemName, $hostname, $availabilityZone)
+	{
+		return self::_getSoapClient(array_merge(array($productName, $addons, $operatingSystemName, $hostname, $availabilityZone), array('__method' => 'orderVpsInAvailabilityZone')))->orderVpsInAvailabilityZone($productName, $addons, $operatingSystemName, $hostname, $availabilityZone);
+	}
+
+	/**
 	 * Clone a VPS
 	 *
 	 * @param string $vpsName The vps name
-	 * @throws ApiException
+	 * @throws Exception
 	 */
 	public static function cloneVps($vpsName)
 	{
 		return self::_getSoapClient(array_merge(array($vpsName), array('__method' => 'cloneVps')))->cloneVps($vpsName);
+	}
+
+	/**
+	 * Clone a VPS
+	 *
+	 * @param string $vpsName The vps name
+	 * @param string $availabilityZone The availability zone the clone should be created in.
+	 * @throws Exception
+	 */
+	public static function cloneVpsToAvailabilityZone($vpsName, $availabilityZone)
+	{
+		return self::_getSoapClient(array_merge(array($vpsName, $availabilityZone), array('__method' => 'cloneVpsToAvailabilityZone')))->cloneVpsToAvailabilityZone($vpsName, $availabilityZone);
 	}
 
 	/**
@@ -410,6 +435,16 @@ class Transip_VpsService
 	public static function getTrafficInformationForVps($vpsName)
 	{
 		return self::_getSoapClient(array_merge(array($vpsName), array('__method' => 'getTrafficInformationForVps')))->getTrafficInformationForVps($vpsName);
+	}
+
+	/**
+	 * Get PooledTraffic information for the account
+	 *
+	 * @return array 
+	 */
+	public static function getPooledTrafficInformation()
+	{
+		return self::_getSoapClient(array_merge(array(), array('__method' => 'getPooledTrafficInformation')))->getPooledTrafficInformation();
 	}
 
 	/**
@@ -651,6 +686,16 @@ class Transip_VpsService
 	public static function handoverVps($vpsName, $targetAccountname)
 	{
 		return self::_getSoapClient(array_merge(array($vpsName, $targetAccountname), array('__method' => 'handoverVps')))->handoverVps($vpsName, $targetAccountname);
+	}
+
+	/**
+	 * Returns an array of available AvailabilityZones
+	 *
+	 * @return Transip_AvailabilityZone[] an array of AvailabilityZones
+	 */
+	public static function getAvailableAvailabilityZones()
+	{
+		return self::_getSoapClient(array_merge(array(), array('__method' => 'getAvailableAvailabilityZones')))->getAvailableAvailabilityZones();
 	}
 }
 

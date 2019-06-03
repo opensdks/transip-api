@@ -16,7 +16,7 @@ try {
     $operatingSystemName = 'freebsd-10.2';
     $hostname            = '';
 
-    Transip_VpsService::orderVps($productName, $addons, $operatingSystemName, $hostname);
+    Transip_VpsService::orderVpsInAvailabilityZone($productName, $addons, $operatingSystemName, $hostname, 'ams0');
     echo 'Ordered VPS';
 } catch (SoapFault $f) {
     // It is possible that an error occurs when connecting to the TransIP Soap API,

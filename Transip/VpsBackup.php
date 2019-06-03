@@ -36,6 +36,13 @@ class Transip_VpsBackup
 	 * @var string
 	 */
 	public $operatingSystem = '';
+
+	/**
+	 * The name of the availability zone the backup is in
+	 *
+	 * @var string
+	 */
+	public $availabilityZone;
 }
 
 ?>

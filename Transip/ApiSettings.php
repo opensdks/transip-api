@@ -40,10 +40,4 @@ class Transip_ApiSettings
 	 * One of your private keys; these can be requested via your Controlpanel
 	 */
 	public static $privateKey = '';
-	
-	/**
-	 * Option to add aditional options to the SoapClient(http://php.net/manual/en/soapclient.soapclient.php)
-	 */
-	public static $soapOptions = array();
-	
 }
