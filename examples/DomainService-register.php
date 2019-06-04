@@ -11,8 +11,8 @@ try
 	// $domain = new Transip_Domain('transip.nl', <array of nameservers>, <array of contacts>,
 	//                   <array of dns entries>);
 	$domain = new Transip_Domain('transip.nl');
-	Transip_DomainService::register($domain);
-	echo 'The domain ' . $domain->name . ' has been requested.';
+	$propositionNumber = Transip_DomainService::register($domain);
+	echo 'The domain ' . $domain->name . ' has been requested with proposition number ' . $propositionNumber;
 }
 catch(SoapFault $e)
 {

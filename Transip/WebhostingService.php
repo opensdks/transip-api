@@ -22,7 +22,7 @@ class Transip_WebhostingService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'WebhostingService';
 	/** The API version. */
-	const API_VERSION = '5.4';
+	const API_VERSION = '5.13';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 
@@ -66,17 +66,11 @@ class Transip_WebhostingService
 				'features' => SOAP_SINGLE_ELEMENT_ARRAYS, // see http://bugs.php.net/bug.php?id=43338
 				'trace'    => false, // can be used for debugging
 			);
-      
-			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
 
 			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 			try
 			{
-				self::$_soapClient = new \Camcima\Soap\Client( $wsdlUri, $options );
-				if( $options[ 'proxy_host' ] )
-				{
-					self::$_soapClient->useProxy( $options['proxy_login'] . ':' . $options['proxy_password'] . '@' . $options['proxy_host'], $options['proxy_port'] );
-				}
+				self::$_soapClient = new SoapClient($wsdlUri, $options);
 			}
 			catch(SoapFault $sf)
 			{
@@ -193,12 +187,14 @@ class Transip_WebhostingService
 	 */
 	protected static function _urlencode($string)
 	{
+		$string = trim($string);
 		$string = rawurlencode($string);
 		return str_replace('%7E', '~', $string);
 	}
 
 	const CANCELLATIONTIME_END = 'end';
 	const CANCELLATIONTIME_IMMEDIATELY = 'immediately';
+	const TRACK_ENDPOINT_NAME = 'Webhosting';
 
 	/**
 	 * Get all domain names that have a webhosting package attached to them.

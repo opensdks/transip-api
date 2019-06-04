@@ -1,3 +1,38 @@
+TRANSIP API V5.9
+
+NEW
+ - Added a function to request the authcode of a domain at the dnsBE or EURid registries
+
+TRANSIP API V5.8
+
+NEW
+ - Added Pooled Traffic for VPS
+
+TRANSIP API V5.7
+
+NEW
+ - Added AvailabilityZones
+
+TRANSIP API V5.6
+
+NEW
+ - Added custom target ports for HA-IP
+   Use different source and destination ports for a HA-IP configuration.
+ - Added option to configure SSL between HA-IP and VPS
+   For each configuration specify whether the connection between HA-IP and the VPS is secured.
+ - Added HA-IP Pro support
+   Attach multiple VPSes to a HA-IP, and modify load balancing settings.
+
+TRANSIP API V5.5
+
+NEW
+ - Added HA-IP Certificates
+   HTTPS Offloading on our proxy's
+ - Add LetsEncrypt certificate to HA-IP
+   Let transip handle your Lets Encrypt certificate and renewals automatically
+ - Change proxy modes: HTTP, HTTPS, TCP, PROXY
+   Use HTTPS modus for SSL offloading. HTTP/HTTPS mode will also set the X-Forwarded-For Header.
+
 TRANSIP API V5.4
 
 NEW

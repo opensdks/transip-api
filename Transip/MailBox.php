@@ -66,15 +66,15 @@ class Transip_MailBox
 	 * @param string $vacationReplySubject Subject of vacation reply
 	 * @param string $vacationReplyMessage Message of vacation reply
 	 */
-	public function __construct($address, $spamCheckerStrength = 'AVERAGE', $maxDiskUsage = 20, $hasVacationReply = false, $vacationReplySubject = '', $vacationReplyMessage = '')
-	{
-		$this->address = $address;
-		$this->spamCheckerStrength = $spamCheckerStrength;
-		$this->maxDiskUsage = $maxDiskUsage;
-		$this->hasVacationReply = $hasVacationReply;
-		$this->vacationReplySubject = $vacationReplySubject;
-		$this->vacationReplyMessage = $vacationReplyMessage;
-	}
+    public function __construct($address, $spamCheckerStrength = 'AVERAGE', $maxDiskUsage = 20, $hasVacationReply = false, $vacationReplySubject = '', $vacationReplyMessage = '')
+    {
+        $this->address = $address;
+        $this->spamCheckerStrength = $spamCheckerStrength;
+        $this->maxDiskUsage = $maxDiskUsage;
+        $this->hasVacationReply = $hasVacationReply;
+        $this->vacationReplySubject = $vacationReplySubject;
+        $this->vacationReplyMessage = $vacationReplyMessage;
+    }
 }
 
 ?>

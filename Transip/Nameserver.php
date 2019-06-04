@@ -39,12 +39,12 @@ class Transip_Nameserver
 	 * @param string $ipv4 OPTIONAL ipv4 glue record for this nameserver
 	 * @param string $ipv6 OPTIONAL ipv6 glue record for this nameserver
 	 */
-	public function __construct($hostname, $ipv4='', $ipv6='')
-	{
-		$this->hostname = $hostname;
-		$this->ipv4		= $ipv4;
-		$this->ipv6		= $ipv6;
-	}
+    public function __construct($hostname, $ipv4 = '', $ipv6 = '')
+    {
+        $this->hostname = $hostname;
+        $this->ipv4 = $ipv4;
+        $this->ipv6 = $ipv6;
+    }
 }
 
 ?>

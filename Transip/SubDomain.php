@@ -21,10 +21,10 @@ class Transip_SubDomain
 	 *
 	 * @param string $name Name of SubDomain
 	 */
-	public function __construct($name)
-	{
-		$this->name = $name;
-	}
+    public function __construct($name)
+    {
+        $this->name = $name;
+    }
 }
 
 ?>

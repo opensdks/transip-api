@@ -16,7 +16,7 @@ class Transip_ColocationService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'ColocationService';
 	/** The API version. */
-	const API_VERSION = '5.4';
+	const API_VERSION = '5.13';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 
@@ -55,16 +55,10 @@ class Transip_ColocationService
 				'trace'    => false, // can be used for debugging
 			);
 
-			$options = array_merge( $options, Transip_ApiSettings::$soapOptions );
-
 			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 			try
 			{
-				self::$_soapClient = new \Camcima\Soap\Client( $wsdlUri, $options );
-				if( $options[ 'proxy_host' ] )
-				{
-					self::$_soapClient->useProxy( $options['proxy_login'] . ':' . $options['proxy_password'] . '@' . $options['proxy_host'], $options['proxy_port'] );
-				}
+				self::$_soapClient = new SoapClient($wsdlUri, $options);
 			}
 			catch(SoapFault $sf)
 			{
@@ -181,9 +175,12 @@ class Transip_ColocationService
 	 */
 	protected static function _urlencode($string)
 	{
+		$string = trim($string);
 		$string = rawurlencode($string);
 		return str_replace('%7E', '~', $string);
 	}
+
+	const TRACK_ENDPOINT_NAME = 'Colocation';
 
 	/**
 	 * Requests access to the data-center
@@ -193,6 +190,7 @@ class Transip_ColocationService
 	 * @param string[] $visitors the names of the visitors for this data-center visit, must be at least 1 and at most 20
 	 * @param string $phoneNumber if an SMS with access codes needs to be sent, set the phonenumber of the receiving phone here;
 	 * @return Transip_DataCenterVisitor[] An array of Visitor objects holding information (such as reservation and access number) about
+	 * @throws ApiException
 	 */
 	public static function requestAccess($when, $duration, $visitors, $phoneNumber)
 	{
@@ -207,6 +205,7 @@ class Transip_ColocationService
 	 * @param string $phoneNumber Phone number to contact
 	 * @param int $expectedDuration Expected duration of the job in minutes
 	 * @param string $instructions What to do
+	 * @throws ApiException
 	 */
 	public static function requestRemoteHands($coloName, $contactName, $phoneNumber, $expectedDuration, $instructions)
 	{
@@ -256,6 +255,7 @@ class Transip_ColocationService
 	 *
 	 * @param string $ipAddress The IpAddress to create, can be either ipv4 or ipv6.
 	 * @param string $reverseDns The RDNS name for this IpAddress
+	 * @throws ApiException
 	 */
 	public static function createIpAddress($ipAddress, $reverseDns)
 	{

@@ -29,6 +29,13 @@ class Transip_Snapshot
 	 * @var string
 	 */
 	public $dateTimeCreate = '';
+
+	/**
+	 * The name of  the availability zone the snapshot is in
+	 *
+	 * @var string
+	 */
+	public $availabilityZone;
 }
 
 ?>

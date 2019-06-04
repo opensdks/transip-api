@@ -12,7 +12,7 @@ require_once('Transip/HaipService.php');
 
 try {
     // Get a haip by name
-    $haip = Transip_HaipService::getHaip('haipName');
+    $haip = Transip_HaipService::getHaip('example-haip');
 
     print_r($haip);
 } catch (SoapFault $f) {

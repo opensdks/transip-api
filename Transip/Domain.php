@@ -10,7 +10,8 @@
 class Transip_Domain
 {
 	/**
-	 * The name, including the tld of this domain
+	 * The name, including the tld of this domain.
+	 * - Must meet the requirements for a domain name described in: <a href="https://tools.ietf.org/html/rfc952" target="_blanc">RFC 952</a>
 	 *
 	 * @var string
 	 */
@@ -91,14 +92,14 @@ class Transip_Domain
 	 * @param DnsEntry[] $dnsEntries the list of DnsEntries for this domain
 	 * @param DomainBranding $branding the branding for this domain, see the branding property for more info
 	 */
-	public function __construct($name, $nameservers=array(), $contacts=array(), $dnsEntries=array(), $branding=null)
-	{
-		$this->name			= $name;
-		$this->nameservers	= $nameservers;
-		$this->contacts 	= $contacts;
-		$this->dnsEntries	= $dnsEntries;
-		$this->branding 	= $branding;
-	}
+    public function __construct($name, $nameservers = array(), $contacts = array(), $dnsEntries = array(), $branding = null)
+    {
+        $this->name = $name;
+        $this->nameservers = $nameservers;
+        $this->contacts = $contacts;
+        $this->dnsEntries = $dnsEntries;
+        $this->branding = $branding;
+    }
 }
 
 ?>

@@ -24,8 +24,8 @@ try
 	// you can now use the $dnsEntries array as the fourth parameter when instantiating
 	// a new Transip_Domain. For example:
 	$domain = new Transip_Domain('example.com', $nameservers = null, $contacts = null, $dnsEntries);
-	Transip_DomainService::register($domain);
-	echo 'The domain ' . $domain->name . ' has been requested.';
+	$propositionNumber = Transip_DomainService::register($domain);
+	echo 'The domain ' . $domain->name . ' has been requested with proposition number ' . $propositionNumber;
 }
 catch(SoapFault $f)
 {

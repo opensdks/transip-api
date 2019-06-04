@@ -66,6 +66,13 @@ class Transip_Vps
 	public $ipAddress = '';
 
 	/**
+	 * The Vps main ipv6 address
+	 *
+	 * @var string
+	 */
+	public $ipv6Address = '';
+
+	/**
 	 * The Vps MacAddress
 	 *
 	 * @var string
@@ -106,6 +113,13 @@ class Transip_Vps
 	 * @var boolean
 	 */
 	public $isCustomerLocked = false;
+
+	/**
+	 * The availability zone the vps is in
+	 *
+	 * @var string
+	 */
+	public $availabilityZone = '';
 }
 
 ?>

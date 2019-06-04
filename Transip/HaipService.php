@@ -2,6 +2,7 @@
 
 require_once('ApiSettings.php');
 require_once('Haip.php');
+require_once('Vps.php');
 
 /**
  * This is the API endpoint for the HaipService
@@ -16,7 +17,7 @@ class Transip_HaipService
 	/** The SOAP service that corresponds with this class. */
 	const SERVICE = 'HaipService';
 	/** The API version. */
-	const API_VERSION = '5.4';
+	const API_VERSION = '5.13';
 	/** @var SoapClient  The SoapClient used to perform the SOAP calls. */
 	protected static $_soapClient = null;
 
@@ -46,6 +47,7 @@ class Transip_HaipService
 
 			$classMap = array(
 				'Haip' => 'Transip_Haip',
+				'Vps' => 'Transip_Vps',
 			);
 
 			$options = array(
@@ -55,18 +57,10 @@ class Transip_HaipService
 				'trace'    => false, // can be used for debugging
 			);
 
-            $options = array_merge( $options, Transip_ApiSettings::$soapOptions );
-
 			$wsdlUri  = "https://{$endpoint}/wsdl/?service=" . self::SERVICE;
 			try
 			{
-				self::$_soapClient = new \Camcima\Soap\Client($wsdlUri, $options);
-
-                self::$_soapClient = new \Camcima\Soap\Client( $wsdlUri, $options );
-                if( $options[ 'proxy_host' ] )
-                {
-                    self::$_soapClient->useProxy( $options['proxy_login'] . ':' . $options['proxy_password'] . '@' . $options['proxy_host'], $options['proxy_port'] );
-                }
+				self::$_soapClient = new SoapClient($wsdlUri, $options);
 			}
 			catch(SoapFault $sf)
 			{
@@ -183,14 +177,20 @@ class Transip_HaipService
 	 */
 	protected static function _urlencode($string)
 	{
+		$string = trim($string);
 		$string = rawurlencode($string);
 		return str_replace('%7E', '~', $string);
 	}
+
+	const TRACK_ENDPOINT_NAME = 'HA-IP';
+	const CANCELLATIONTIME_END = 'end';
+	const CANCELLATIONTIME_IMMEDIATELY = 'immediately';
 
 	/**
 	 * Get a HA-IP by name
 	 *
 	 * @param string $haipName The HA-IP name
+	 * @throws ApiException
 	 * @return Transip_Haip The vps objects
 	 */
 	public static function getHaip($haipName)
@@ -213,10 +213,326 @@ class Transip_HaipService
 	 *
 	 * @param string $haipName The HA-IP name
 	 * @param string $vpsName The Vps name
+	 * @throws ApiException
 	 */
 	public static function changeHaipVps($haipName, $vpsName)
 	{
 		return self::_getSoapClient(array_merge(array($haipName, $vpsName), array('__method' => 'changeHaipVps')))->changeHaipVps($haipName, $vpsName);
+	}
+
+	/**
+	 * Replaces currently attached VPSes to the HA-IP with the provided list of VPSes.
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @param string[] $vpsNames The Vps names
+	 * @throws ApiException
+	 */
+	public static function setHaipVpses($haipName, $vpsNames)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $vpsNames), array('__method' => 'setHaipVpses')))->setHaipVpses($haipName, $vpsNames);
+	}
+
+	/**
+	 * Sets the provided IP setup for the HA-IP.
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @param string $ipSetup The IP setup ('both','noipv6','ipv6to4')
+	 * @throws ApiException
+	 */
+	public static function setIpSetup($haipName, $ipSetup)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $ipSetup), array('__method' => 'setIpSetup')))->setIpSetup($haipName, $ipSetup);
+	}
+
+	/**
+	 * Sets the provided balancing mode for the HA-IP. The cookieName argument may be an empty string unless the
+	 * balancing mode is set to 'cookie'.
+	 * 
+	 * This is a HA-IP Pro feature.
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @param string $balancingMode The balancing mode ('roundrobin','cookie','source')
+	 * @param string $cookieName The cookie name that pins the session if the balancing mode is 'cookie'
+	 * @throws ApiException
+	 */
+	public static function setBalancingMode($haipName, $balancingMode, $cookieName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $balancingMode, $cookieName), array('__method' => 'setBalancingMode')))->setBalancingMode($haipName, $balancingMode, $cookieName);
+	}
+
+	/**
+	 * Configures a HTTP health check for the HA-IP. To disable a HTTP health check use setTcpHealthCheck().
+	 * 
+	 * This is a HA-IP Pro feature.
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @param string $path The path that will be accessed when performing health checks
+	 * @param int $port The port that will be used when performing health checks
+	 * @throws ApiException
+	 */
+	public static function setHttpHealthCheck($haipName, $path, $port)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $path, $port), array('__method' => 'setHttpHealthCheck')))->setHttpHealthCheck($haipName, $path, $port);
+	}
+
+	/**
+	 * Configures a TCP health check for the HA-IP (this is the default health check).
+	 * 
+	 * This is a HA-IP Pro feature.
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @throws ApiException
+	 */
+	public static function setTcpHealthCheck($haipName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName), array('__method' => 'setTcpHealthCheck')))->setTcpHealthCheck($haipName);
+	}
+
+	/**
+	 * Get a status report for the HA-IP.
+	 * 
+	 * This is a HA-IP Pro feature.
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @throws ApiException
+	 * @return array 
+	 */
+	public static function getStatusReport($haipName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName), array('__method' => 'getStatusReport')))->getStatusReport($haipName);
+	}
+
+	/**
+	 * Get all Certificates by Haip
+	 *
+	 * @param string $haipName 
+	 * @throws ApiException
+	 * @return array 
+	 */
+	public static function getCertificatesByHaip($haipName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName), array('__method' => 'getCertificatesByHaip')))->getCertificatesByHaip($haipName);
+	}
+
+	/**
+	 * Get all available certificates ready to attach to your HAIP
+	 *
+	 * @param string $haipName 
+	 * @throws ApiException
+	 * @return array 
+	 */
+	public static function getAvailableCertificatesByHaip($haipName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName), array('__method' => 'getAvailableCertificatesByHaip')))->getAvailableCertificatesByHaip($haipName);
+	}
+
+	/**
+	 * Add a HaipCertificate to this object
+	 *
+	 * @param string $haipName 
+	 * @param int $certificateId 
+	 * @throws ApiException
+	 */
+	public static function addCertificateToHaip($haipName, $certificateId)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $certificateId), array('__method' => 'addCertificateToHaip')))->addCertificateToHaip($haipName, $certificateId);
+	}
+
+	/**
+	 * Removes a Certificate from this HA-IP
+	 *
+	 * @param string $haipName 
+	 * @param int $certificateId 
+	 * @throws ApiException
+	 */
+	public static function deleteCertificateFromHaip($haipName, $certificateId)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $certificateId), array('__method' => 'deleteCertificateFromHaip')))->deleteCertificateFromHaip($haipName, $certificateId);
+	}
+
+	/**
+	 * Add EncryptCertificate to HA-IP
+	 *
+	 * @param string $haipName 
+	 * @param string $commonName 
+	 * @throws ApiException
+	 */
+	public static function startHaipLetsEncryptCertificateIssue($haipName, $commonName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $commonName), array('__method' => 'startHaipLetsEncryptCertificateIssue')))->startHaipLetsEncryptCertificateIssue($haipName, $commonName);
+	}
+
+	/**
+	 * Returns the current ptr for the given HA-IP
+	 *
+	 * @param string $haipName 
+	 * @throws ApiException
+	 * @return string 
+	 */
+	public static function getPtrForHaip($haipName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName), array('__method' => 'getPtrForHaip')))->getPtrForHaip($haipName);
+	}
+
+	/**
+	 * Update the ptr records for the given HA-IP
+	 *
+	 * @param string $haipName 
+	 * @param string $ptr 
+	 * @throws ApiException
+	 */
+	public static function setPtrForHaip($haipName, $ptr)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $ptr), array('__method' => 'setPtrForHaip')))->setPtrForHaip($haipName, $ptr);
+	}
+
+	/**
+	 * Update the description for HA-IP
+	 *
+	 * @param string $haipName 
+	 * @param string $description 
+	 * @throws ApiException
+	 */
+	public static function setHaipDescription($haipName, $description)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $description), array('__method' => 'setHaipDescription')))->setHaipDescription($haipName, $description);
+	}
+
+	/**
+	 * Get all port configurations for given HA-IP
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @deprecated Please use HaipService::getPortConfigurations()
+	 * @throws ApiException
+	 * @return array 
+	 */
+	public static function getHaipPortConfigurations($haipName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName), array('__method' => 'getHaipPortConfigurations')))->getHaipPortConfigurations($haipName);
+	}
+
+	/**
+	 * Get all port configurations for given HA-IP
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @throws ApiException
+	 * @return array 
+	 */
+	public static function getPortConfigurations($haipName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName), array('__method' => 'getPortConfigurations')))->getPortConfigurations($haipName);
+	}
+
+	/**
+	 * Set default port configurations for given HA-IP
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @throws ApiException
+	 */
+	public static function setDefaultPortConfiguration($haipName)
+	{
+		return self::_getSoapClient(array_merge(array($haipName), array('__method' => 'setDefaultPortConfiguration')))->setDefaultPortConfiguration($haipName);
+	}
+
+	/**
+	 * Add port configuration to HA-IP
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @param string $name The name describing the port configuration
+	 * @param int $portNumber The port that is addressed on the HA-IP IP
+	 * @param string $mode The port mode ('tcp','http','https','proxy')
+	 * @deprecated Please use HaipService::addPortConfiguration()
+	 * @throws ApiException
+	 */
+	public static function addHaipPortConfiguration($haipName, $name, $portNumber, $mode)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $name, $portNumber, $mode), array('__method' => 'addHaipPortConfiguration')))->addHaipPortConfiguration($haipName, $name, $portNumber, $mode);
+	}
+
+	/**
+	 * Add port configuration to HA-IP
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @param string $name The name describing the port configuration
+	 * @param int $sourcePort The port that is addressed on the HA-IP IP
+	 * @param int $targetPort The port that is addressed on the VPS
+	 * @param string $mode The port mode ('tcp','http','https','proxy')
+	 * @param string $endpointSslMode The SSL mode for the endpoint ('off','on','strict')
+	 * @throws ApiException
+	 */
+	public static function addPortConfiguration($haipName, $name, $sourcePort, $targetPort, $mode, $endpointSslMode)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $name, $sourcePort, $targetPort, $mode, $endpointSslMode), array('__method' => 'addPortConfiguration')))->addPortConfiguration($haipName, $name, $sourcePort, $targetPort, $mode, $endpointSslMode);
+	}
+
+	/**
+	 * Update port configuration to HA-IP
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @param int $configurationId The identifier for the configuration
+	 * @param string $name The name describing the port configuration
+	 * @param int $portNumber The port that is addressed on the HA-IP IP
+	 * @param string $mode The port mode ('tcp','http','https','proxy')
+	 * @deprecated Please use HaipService::updatePortConfiguration()
+	 * @throws ApiException
+	 */
+	public static function updateHaipPortConfiguration($haipName, $configurationId, $name, $portNumber, $mode)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $configurationId, $name, $portNumber, $mode), array('__method' => 'updateHaipPortConfiguration')))->updateHaipPortConfiguration($haipName, $configurationId, $name, $portNumber, $mode);
+	}
+
+	/**
+	 * Update port configuration to HA-IP
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @param int $configurationId The identifier for the configuration
+	 * @param string $name The name describing the port configuration
+	 * @param int $sourcePort The port that is addressed on the HA-IP IP
+	 * @param int $targetPort The port that is addressed on the VPS
+	 * @param string $mode The port mode ('tcp','http','https','proxy')
+	 * @param string $endpointSslMode The SSL mode for the endpoint ('off','on','strict')
+	 * @throws ApiException
+	 */
+	public static function updatePortConfiguration($haipName, $configurationId, $name, $sourcePort, $targetPort, $mode, $endpointSslMode)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $configurationId, $name, $sourcePort, $targetPort, $mode, $endpointSslMode), array('__method' => 'updatePortConfiguration')))->updatePortConfiguration($haipName, $configurationId, $name, $sourcePort, $targetPort, $mode, $endpointSslMode);
+	}
+
+	/**
+	 * Delete configuration with the provided id from the HA-IP.
+	 *
+	 * @param string $haipName The HA-IP name
+	 * @param int $configurationId The identifier for the configuration
+	 * @deprecated Please use HaipService::deletePortConfiguration()
+	 * @throws ApiException
+	 */
+	public static function deleteHaipPortConfiguration($haipName, $configurationId)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $configurationId), array('__method' => 'deleteHaipPortConfiguration')))->deleteHaipPortConfiguration($haipName, $configurationId);
+	}
+
+	/**
+	 * 
+	 *
+	 * @param string $haipName 
+	 * @param int $configurationId 
+	 * @throws ApiException
+	 */
+	public static function deletePortConfiguration($haipName, $configurationId)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $configurationId), array('__method' => 'deletePortConfiguration')))->deletePortConfiguration($haipName, $configurationId);
+	}
+
+	/**
+	 * Cancel a Haip
+	 *
+	 * @param string $haipName The vps to cancel
+	 * @param string $endTime The time to cancel the haip (HaipService::CANCELLATIONTIME_END (end of contract)
+	 * @throws ApiException on error
+	 */
+	public static function cancelHaip($haipName, $endTime)
+	{
+		return self::_getSoapClient(array_merge(array($haipName, $endTime), array('__method' => 'cancelHaip')))->cancelHaip($haipName, $endTime);
 	}
 }
 

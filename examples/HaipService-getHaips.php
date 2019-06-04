@@ -11,7 +11,7 @@
 require_once('Transip/HaipService.php');
 
 try {
-    // Get a list of all Vps objects
+    // Get a list of all Haip objects
     $haipList = Transip_HaipService::getHaips();
 
     print_r($haipList);

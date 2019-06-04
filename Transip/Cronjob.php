@@ -86,17 +86,17 @@ class Transip_Cronjob
 	 * @param string $monthTrigger Month field for cronjob
 	 * @param string $weekdayTrigger Weekday field for cronjob
 	 */
-	public function __construct($name, $url, $email, $minuteTrigger, $hourTrigger, $dayTrigger, $monthTrigger, $weekdayTrigger)
-	{
-		$this->name = $name;
-		$this->url = $url;
-		$this->email = $email;
-		$this->minuteTrigger = $minuteTrigger;
-		$this->hourTrigger = $hourTrigger;
-		$this->dayTrigger = $dayTrigger;
-		$this->monthTrigger = $monthTrigger;
-		$this->weekdayTrigger = $weekdayTrigger;
-	}
+    public function __construct($name, $url, $email, $minuteTrigger, $hourTrigger, $dayTrigger, $monthTrigger, $weekdayTrigger)
+    {
+        $this->name = $name;
+        $this->url = $url;
+        $this->email = $email;
+        $this->minuteTrigger = $minuteTrigger;
+        $this->hourTrigger = $hourTrigger;
+        $this->dayTrigger = $dayTrigger;
+        $this->monthTrigger = $monthTrigger;
+        $this->weekdayTrigger = $weekdayTrigger;
+    }
 }
 
 ?>
